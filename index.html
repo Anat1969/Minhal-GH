@@ -176,6 +176,18 @@ main{flex:1;min-height:0;position:relative}
 .open-line{margin:0 0 .8em;padding:.6em .8em;background:var(--bg);border-radius:8px}
 
 .pres main{cursor:none}
+.stop{background:var(--bad);color:#fff;font-weight:600}
+.stop:hover{background:var(--bad);filter:brightness(.92)}
+body.stopped *,body.stopped *::before,body.stopped *::after{animation:none!important;transition:none!important}
+.hdr-r{display:flex;gap:.5em;align-items:center}
+.s-src{grid-template-columns:1fr 1fr}
+.doc{background:var(--soft);border-radius:10px;padding:.8em .9em;display:grid;gap:.35em;border-inline-start:6px solid var(--C);animation:rise .5s both;min-width:0}
+.doc h3{margin:0;font-size:1.02em;font-weight:600}
+.doc .by{font-size:.8em;color:var(--mute)}
+.doc a{color:var(--ink);font-size:.82em;word-break:break-all}
+.doc ul{margin:0;padding-inline-start:1.1em;font-size:.9em}
+.doc .warn{color:var(--bad);font-size:.85em}
+.doc.a{--C:var(--adm)} .doc.n{--C:var(--now)} .doc.x{--C:var(--next)} .doc.k{--C:var(--ink)}
 @media (max-width:900px){
   .s-admin,.s-axes,.s-now,.s-next,.s-brief{grid-template-columns:1fr}
   .head h1{font-size:1.5em} nav button{min-width:5.6em}
@@ -188,6 +200,7 @@ main{flex:1;min-height:0;position:relative}
 
 <header>
   <a class="brand" href="#admin">מפת הרישוי<small>אסטרטגיית המינהל מול היערכות אשדוד</small></a>
+  <div class="hdr-r"><button id="stopBtn" class="stop" aria-pressed="false">עצירה</button>
   <div class="menuwrap">
     <button class="logo" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-label="תפריט">ר</button>
     <div class="menu" id="menu" hidden>
@@ -195,7 +208,7 @@ main{flex:1;min-height:0;position:relative}
       <button id="themeBtn">החלפת ערכת צבעים</button>
       <button id="resetBtn">איפוס רשימת ההכנה</button>
     </div>
-  </div>
+  </div></div>
 </header>
 <nav id="tabs" aria-label="מסכי האפליקציה"></nav>
 <div class="progress" aria-hidden="true"><i id="prog"></i></div>
@@ -344,6 +357,17 @@ main{flex:1;min-height:0;position:relative}
   <div class="mxwrap"><div class="mx" id="fitMx"></div></div>
 </section>
 
+<!-- 8 מקורות -->
+<section class="view s-src L-fit" id="v-sources" hidden>
+  <div class="head" style="grid-column:1/-1">
+    <span class="layer" style="--L:var(--ink)">תיעוד המקורות</span>
+    <h1>אין מסמך של אשדוד על ההיערכות לאסטרטגיה</h1>
+    <p>מצב קיים ועתידי נגזרו משלושה מסמכים. <mark>ההתאמה היא הערכה שלי</mark> ולא מסמך. לכל מקור מסומן מה נלקח ממנו ומה לא נקרא.</p>
+  </div>
+  <div class="cards" id="docsA"></div>
+  <div class="cards" id="docsB"></div>
+</section>
+
 <!-- 7 תדריך -->
 <section class="view s-brief L-fit" id="v-briefing" hidden>
   <div class="head" style="grid-column:1/-1">
@@ -373,6 +397,7 @@ var VIEWS=[
  {id:'next',t:'מצב עתידי',s:'אשדוד',L:'next'},
  {gap:1},
  {id:'fit',t:'התאמה',s:'שכבות זו לצד זו',L:'fit'},
+ {id:'sources',t:'מקורות',s:'תיעוד',L:'fit'},
  {id:'briefing',t:'תדריך',s:'לאירוע',L:'fit'}
 ];
 var PAGES=VIEWS.filter(function(v){return v.id});
@@ -477,13 +502,14 @@ window.addEventListener('hashchange',function(){go(location.hash.slice(1))});
 
 function countUp(root){
   root.querySelectorAll('[data-count]').forEach(function(el){
-    var to=+el.dataset.count, plus=el.dataset.plus, t0=performance.now(), d=reduce?1:1300;
+    var to=+el.dataset.count, plus=el.dataset.plus, t0=performance.now(), d=(reduce||document.body.classList.contains('stopped'))?1:1300;
     (function f(t){var p=Math.min(1,(t-t0)/d), e=1-Math.pow(1-p,3);
       el.textContent=Math.round(to*e).toLocaleString('he-IL')+(plus&&p>=1?'+':''); if(p<1) requestAnimationFrame(f)})(t0);
   });
 }
 function grow(root){
   root.querySelectorAll('[data-w]').forEach(function(el){
+    if(document.body.classList.contains('stopped')){el.style.width=el.dataset.w+'%';return}
     el.style.width='0'; var delay=(+el.dataset.d||0)*1000;
     if(el.classList.contains('seg')&&el.previousElementSibling&&el.previousElementSibling.classList.contains('seg')&&!el.dataset.d) delay=0;
     setTimeout(function(){requestAnimationFrame(function(){el.style.width=el.dataset.w+'%'})},60+delay);
@@ -577,6 +603,7 @@ document.addEventListener('click',function(){menu.hidden=true;mb.setAttribute('a
 $('#themeBtn').onclick=function(){var r=document.documentElement,dark=(r.dataset.theme==='dark')||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=dark?'light':'dark'};
 $('#resetBtn').onclick=function(){store.set([]);renderCheck()};
 $('#presBtn').onclick=function(){
+  if(document.body.classList.contains('stopped')) setStopped(false);
   var on=this.getAttribute('aria-pressed')!=='true'; this.setAttribute('aria-pressed',on);
   document.body.classList.toggle('pres',on); clearInterval(presTimer); clearInterval(progTimer); $('#prog').style.width='0';
   if(!on) return;
@@ -590,6 +617,56 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') location.hash=PAGES[(i+PAGES.length-1)%PAGES.length].id;
   if(e.key==='ArrowLeft') location.hash=PAGES[(i+1)%PAGES.length].id;
 });
+
+
+var DOCS_A=[
+ {c:'a',t:'סקירה בינלאומית בנושא תהליכי רישוי בנייה',by:'מינהל התכנון, אגף בכיר לתכנון אסטרטגי וחטיבת רגולציה, מרץ 2026. PDF, 125 עמודים.',
+  u:['כל שכבת המינהל: צירים, תהליך טורי מול מקבילי, נתוני משך','על אשדוד: נספח 1, עמ\' 104 עד 106 (367 ימים, פורום אדריכל העיר, ניטור, 14 ל-10 ימים, 48 שעות, תקרת שלושה סבבים, כ-30% ללא מענה, שתי מערכות)'],
+  w:'זה תיאור של אשדוד מפי המינהל, מראיונות, ולא מסמך של אשדוד. נקרא במלואו הנוגע לתקציר, לסיכום ולנספח 1.',
+  l:'https://www.gov.il/BlobFolder/guide/new-icensing-strategy/he/licensing_process_survey.pdf'},
+ {c:'a',t:'כתבה: מינהל התכנון פותח במהלך לגיבוש אסטרטגיה חדשה',by:'מרכז הנדל"ן. ללא תאריך מפורש.',
+  u:['שלב המהלך: למידה והנחת תשתית, בלי לוחות זמנים וחקיקה','שיתוף ציבור: מפגשי חשיפה מקוונים והרשמה מראש'],
+  w:'תאריך הפרסום לא ידוע, ולכן לא ברור אם המצב עדכני.',l:'https://www.nadlancenter.co.il/article/13891'},
+ {c:'a',t:'דף "אסטרטגיית רישוי חדשה" באתר gov.il',by:'מינהל התכנון',u:['לא נעשה בו שימוש'],w:'נחסם בגישה (403). לא נקרא. כדאי לבדוק ידנית את המצב העדכני.',l:'https://www.gov.il/he/departments/guides/new-icensing-strategy'}
+];
+var DOCS_B=[
+ {c:'n',t:'מצגת סיכום, רישוי (pptx)',by:'מינהל ההנדסה, אגף רישוי בניה, אשדוד. סיכום שנת עבודה 2025. נמצא ב-Drive.',
+  u:['מצב קיים: 287 היתרים, 1,284 בקשות בטיפול, 494 בוועדה או ברשות, 2,264 יחידות דיור','מצב עתידי: ההיערכות לחוק, ארבעת יעדי 2026, שבעת מסלולי ההיתרים'],
+  w:'המסמך היחיד של אשדוד שמתאר מצב עתידי. הוא אינו מתייחס לאסטרטגיית המינהל. התאמת מספרים לכותרות בפרויקטים לא אומתה.',
+  l:'https://drive.google.com/file/d/1_Yfh9V6nFcaJDgcVL-0ywjcrGp9bIU3x/view'},
+ {c:'x',t:'מסמך מדיניות תכנונית, ספטמבר 2026 (docx)',by:'עיריית אשדוד, טיוטת עבודה. נמצא ב-Drive.',
+  u:['מצב עתידי: קיומו כטיוטה, ותכליתו: להנחות בחינת תכניות והליכי רישוי'],
+  w:'נקרא רק קטע הפתיחה (מבוא ומטרות), מתוך מסמך של 16MB. לא נקרא תוכנו המלא, ולא נבדק אם יש בו התייחסות לרישוי.',
+  l:'https://drive.google.com/file/d/1gYbJt24sQnOdT7yIKhEjlkZv3cjcidKf/view'},
+ {c:'n',t:'טבלת אימות (verification-table)',by:'גיליון ב-Drive, ממשחק ללא קשר ישיר לאסטרטגיה.',
+  u:['רק ההערה "הנחיות מרחביות, מהדורה 18 (12/2024), פורסמה להשגות, לוודא שאושרה"'],
+  w:'נראתה רק כקטע. ההערה מסומנת באפליקציה "לאימות מול האגף".',
+  l:'https://docs.google.com/spreadsheets/d/1GRH2aoNt1AlP1Gcv-eSC39NNPBlgUrEywfhsvP71IHY/edit'},
+ {c:'k',t:'מסך ההתאמה והציונים (בדרך, קיים, פער, לא תועד)',by:'הערכה שלי.',
+  u:['השוואה בין שלושת הצירים לפי המסמכים שלמעלה'],w:'אינו מסמך מקור. אין מסמך של אשדוד שמתאים את עצמו לאסטרטגיה.',l:''}
+];
+function renderDocs(el,arr){
+  $(el).innerHTML=arr.map(function(d,i){
+    return '<div class="doc '+d.c+'" style="animation-delay:'+(i*80)+'ms"><h3>'+d.t+'</h3><span class="by">'+d.by+'</span><b style="font-size:.85em">נלקח ממנו:</b><ul>'+d.u.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul><span class="warn">'+d.w+'</span>'+(d.l?'<a href="'+d.l+'" target="_blank" rel="noopener">'+d.l+'</a>':'')+'</div>';
+  }).join('');
+}
+renderDocs('#docsA',DOCS_A); renderDocs('#docsB',DOCS_B);
+
+/* עצירה */
+function setStopped(on){
+  document.body.classList.toggle('stopped',on);
+  var b=$('#stopBtn'); b.setAttribute('aria-pressed',on); b.textContent=on?'הפעלה':'עצירה';
+  b.classList.toggle('stop',!on); b.classList.toggle('on',on);
+  if(on){
+    clearInterval(presTimer); clearInterval(progTimer); $('#prog').style.width='0';
+    document.body.classList.remove('pres'); $('#presBtn').setAttribute('aria-pressed','false');
+    document.querySelectorAll('[data-count]').forEach(function(el){el.textContent=(+el.dataset.count).toLocaleString('he-IL')+(el.dataset.plus?'+':'')});
+    document.querySelectorAll('[data-w]').forEach(function(el){el.style.transition='none';el.style.width=el.dataset.w+'%'});
+  } else {
+    document.querySelectorAll('[data-w]').forEach(function(el){el.style.transition=''});
+  }
+}
+$('#stopBtn').onclick=function(){setStopped(!document.body.classList.contains('stopped'))};
 
 drawHub();
 go(location.hash.slice(1)||'admin');
