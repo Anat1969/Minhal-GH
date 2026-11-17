@@ -4,159 +4,190 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600&display=swap">
 <style>
-/* קומפוזיציה: סרגל עליון קבוע, שורת ניווט, ובמרכז מסך אחד בכל פעם שממלא את החלון ונקרא מימין לשמאל */
+/* קומפוזיציה: שלוש שכבות בצבעים נפרדים (המינהל, אשדוד היום, אשדוד מחר) ומסך אחד בלבד שמציב אותן זו לצד זו */
 :root{
   --bg:#FFFFFF; --ink:#2E2E2B; --mute:#77766F; --soft:#F4F3EF; --line:#E4E2DB;
-  --flow:#1F3A5F; --good:#1E8E5A; --bad:#C0392B; --mark:#F6D84C; --markink:#2E2E2B;
+  --adm:#1F3A5F; --now:#0F766E; --next:#B45309;
+  --good:#1E8E5A; --bad:#C0392B; --warn:#B7791F; --mark:#F6D84C; --markink:#2E2E2B;
   --font:'Heebo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
-  --u:clamp(13px, 0.55vw + 0.7vh + 7px, 22px);
+  --u:clamp(13px, 0.5vw + 0.65vh + 7px, 21px);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#141413; --ink:#E9E8E2; --mute:#9D9B92; --soft:#1E1E1C; --line:#2F2F2C;
-  --flow:#8FB4E8; --good:#4CC38A; --bad:#F0796B; --mark:#E7C93A; --markink:#141413; color-scheme:dark}}
+  --adm:#8FB4E8; --now:#4FD1C5; --next:#F6A04D;
+  --good:#4CC38A; --bad:#F0796B; --warn:#E7C45A; --mark:#E7C93A; --markink:#141413; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141413; --ink:#E9E8E2; --mute:#9D9B92; --soft:#1E1E1C; --line:#2F2F2C;
-  --flow:#8FB4E8; --good:#4CC38A; --bad:#F0796B; --mark:#E7C93A; --markink:#141413; color-scheme:dark}
+  --adm:#8FB4E8; --now:#4FD1C5; --next:#F6A04D;
+  --good:#4CC38A; --bad:#F0796B; --warn:#E7C45A; --mark:#E7C93A; --markink:#141413; color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:300 var(--u)/1.5 var(--font);direction:rtl;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:calc(var(--u)*.9);padding-block:calc(var(--u)*.7)}
+  display:flex;flex-direction:column;gap:calc(var(--u)*.7);padding-block:calc(var(--u)*.6)}
 b,strong{font-weight:600}
-button{font:inherit;color:inherit;background:var(--soft);border:0;border-radius:6px;cursor:pointer;
-  padding:.5em .9em;transition:background .2s,transform .15s,color .2s}
+button{font:inherit;color:inherit;background:var(--soft);border:0;border-radius:6px;cursor:pointer;padding:.45em .85em;transition:background .2s,transform .15s}
 button:hover{background:var(--line)} button:active{transform:scale(.97)}
-button:focus-visible,a:focus-visible{outline:2px solid var(--flow);outline-offset:2px}
-button[aria-pressed="true"],button.on{background:var(--ink);color:var(--bg)}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--adm);outline-offset:2px}
+button.on{background:var(--ink);color:var(--bg)}
+mark{background:var(--mark);color:var(--markink);padding:0 .25em;border-radius:3px}
+.good{color:var(--good)} .bad{color:var(--bad)}
 
-/* סרגל עליון */
 header{display:flex;align-items:center;justify-content:space-between;gap:1em;flex:none}
-.brand{font-weight:600;font-size:1.25em;color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.brand{font-weight:600;font-size:1.2em;color:var(--ink);text-decoration:none}
 .brand small{font-weight:300;color:var(--mute);font-size:.7em;margin-inline-start:.7em}
 .menuwrap{position:relative}
-.logo{width:2.4em;height:2.4em;padding:0;display:grid;place-items:center;background:var(--ink);color:var(--bg);font-weight:600}
-.menu{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:20;background:var(--bg);
-  box-shadow:0 8px 30px rgba(0,0,0,.18);border-radius:8px;padding:.5em;display:grid;gap:.35em;min-width:13em}
-nav{display:flex;gap:.4em;flex-wrap:wrap;flex:none}
-nav button{display:flex;flex-direction:column;align-items:flex-start;gap:.05em;padding:.45em .9em;min-width:7.5em}
-nav button span{font-size:.72em;color:var(--mute)} nav button.on span{color:var(--bg);opacity:.7}
+.logo{width:2.3em;height:2.3em;padding:0;display:grid;place-items:center;background:var(--ink);color:var(--bg);font-weight:600}
+.menu{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:20;background:var(--bg);box-shadow:0 8px 30px rgba(0,0,0,.2);border-radius:8px;padding:.5em;display:grid;gap:.35em;min-width:13em}
+
+nav{display:flex;gap:.35em;flex-wrap:wrap;flex:none;align-items:stretch}
+nav button{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:.4em .8em;min-width:6.4em;position:relative;background:var(--soft)}
+nav button span{font-size:.7em;color:var(--mute)}
+nav button::after{content:"";position:absolute;inset-inline:0;bottom:0;height:4px;border-radius:0 0 6px 6px;background:var(--L,var(--ink))}
+nav button.on{background:var(--ink)} nav button.on span{color:var(--bg);opacity:.7}
+nav .gap{width:.6em}
+.L-adm{--L:var(--adm)} .L-now{--L:var(--now)} .L-next{--L:var(--next)} .L-fit{--L:var(--ink)}
 .progress{height:3px;background:var(--soft);border-radius:2px;flex:none;overflow:hidden}
-.progress i{display:block;height:100%;width:0;background:var(--flow)}
+.progress i{display:block;height:100%;width:0;background:var(--ink)}
 
-/* מסך */
 main{flex:1;min-height:0;position:relative}
-.view{position:absolute;inset:0;overflow:auto;display:grid;grid-template-rows:auto 1fr;gap:calc(var(--u)*.9)}
-.view[hidden]{display:none}
-.head h1{margin:0;font-weight:300;font-size:2.1em;line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
-.head p{margin:.35em 0 0;color:var(--mute);max-width:46em}
-mark{background:var(--mark);color:var(--markink);padding:0 .25em;border-radius:3px}
-.bad{color:var(--bad)} .good{color:var(--good)}
-.stage{display:grid;gap:calc(var(--u)*.9);min-height:0}
-.panel{background:var(--soft);border-radius:10px;padding:calc(var(--u)*1);min-width:0}
-.cap{font-size:.78em;color:var(--mute);margin-top:.5em}
-.legend{display:flex;gap:1.2em;flex-wrap:wrap;font-size:.8em;color:var(--mute);align-items:center}
-.legend i{display:inline-block;width:.9em;height:.35em;border-radius:2px;margin-inline-end:.4em;vertical-align:middle}
-.tag{display:inline-block;font-size:.7em;padding:.1em .6em;border-radius:99px;background:var(--mark);color:var(--markink);font-weight:400;vertical-align:middle}
+.view{position:absolute;inset:0;overflow:auto;display:grid;grid-template-rows:auto 1fr;gap:calc(var(--u)*.8);align-content:start;padding-bottom:4px}
+.head h1{margin:0;font-weight:300;font-size:2em;line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
+.head p{margin:.3em 0 0;color:var(--mute);max-width:52em}
+.layer{display:inline-flex;align-items:center;gap:.5em;font-size:.78em;font-weight:600;color:var(--bg);background:var(--L);padding:.1em .8em;border-radius:99px;margin-bottom:.5em}
+.layer.dash{background:transparent;color:var(--L);box-shadow:inset 0 0 0 2px var(--L)}
+.stage{display:grid;gap:calc(var(--u)*.8);min-height:0}
+.panel{background:var(--soft);border-radius:10px;padding:calc(var(--u)*.9);min-width:0}
+.cap{font-size:.78em;color:var(--mute)}
+.src{display:inline-block;font-size:.68em;color:var(--mute);background:var(--bg);border-radius:99px;padding:.05em .7em;margin-top:.35em}
+.tag{display:inline-block;font-size:.7em;padding:.1em .7em;border-radius:99px;background:var(--mark);color:var(--markink);font-weight:400;vertical-align:middle}
+.stripe{height:5px;border-radius:3px;background:var(--L);margin-bottom:.8em}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.rise{animation:rise .6s both}
 
-/* מסך 1: תמונת מצב */
-.s-situation{grid-template-columns:1.1fr 1fr}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.7)}
-.kpi{background:var(--soft);border-radius:10px;padding:calc(var(--u)*.9);display:flex;flex-direction:column;justify-content:space-between;min-height:7em}
-.kpi .n{font-size:3em;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
-.kpi .l{color:var(--mute);font-size:.9em}
-.kpi.hot .n{color:var(--flow)}
-.bars{display:grid;gap:1.1em;align-content:center}
-.bar .row{display:flex;justify-content:space-between;gap:1em;font-size:.95em}
-.bar .track{height:1.1em;background:var(--bg);border-radius:4px;overflow:hidden;margin-top:.35em}
-.bar .fill{height:100%;width:0;border-radius:4px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
-.ratio{font-size:1.05em}
+/* שכבה: המינהל, מסך 1 */
+.s-admin{grid-template-columns:1fr 1.15fr}
+.num3{display:grid;grid-template-columns:repeat(3,1fr);gap:.6em}
+.big{background:var(--bg);border-radius:10px;padding:.8em .9em}
+.big .n{font-size:2.7em;font-weight:300;line-height:1;color:var(--adm);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.big .l{font-size:.82em;color:var(--mute)}
+.road{display:grid;gap:.55em;position:relative}
+.rs{display:grid;grid-template-columns:auto 1fr;gap:.8em;align-items:start;position:relative}
+.rs .d{width:1.6em;height:1.6em;border-radius:50%;border:2px solid var(--adm);display:grid;place-items:center;font-size:.8em;background:var(--bg);flex:none;z-index:1}
+.rs.done .d{background:var(--adm);color:var(--bg)}
+.rs.now .d{animation:pulse 2s ease-in-out infinite}
+.rs.todo .d{border-style:dashed;color:var(--mute)}
+.rs:not(:last-child)::before{content:"";position:absolute;inset-inline-start:.8em;top:1.6em;bottom:-.7em;width:2px;background:var(--adm);opacity:.35;transform-origin:top;animation:grow .9s both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--adm) 20%,transparent)}}
+.rs b{display:block}
+.rs span{color:var(--mute);font-size:.88em}
 
-/* מסך 2: מסע */
-.s-journey{grid-template-rows:auto auto 1fr}
-.ctl{display:flex;gap:.5em;flex-wrap:wrap;align-items:center}
-.flowbox{display:flex;flex-direction:column;min-height:0}
-.flowbox svg{width:100%;height:100%;min-height:15em;flex:1}
-svg text{font-family:var(--font);fill:var(--ink)}
-.node rect{fill:var(--bg);stroke:var(--flow);stroke-width:2;transition:fill .3s}
-.node:hover rect,.node.sel rect{fill:var(--flow)} .node:hover text,.node.sel text{fill:var(--bg)}
-.node{cursor:pointer}
-.node:focus-visible rect{stroke-width:4}
-.arc{fill:none;stroke-width:2.5;stroke-dasharray:7 6;animation:dash 1.2s linear infinite}
-@keyframes dash{to{stroke-dashoffset:-26}}
-.note{min-height:3.2em}
+/* מסך 2: צירים */
+.s-axes{grid-template-columns:1.05fr 1fr}
+.hub{position:relative;min-height:22em}
+.hub svg{position:absolute;inset:0;width:100%;height:100%}
+.hnode{cursor:pointer} .hnode rect{fill:var(--bg);stroke:var(--adm);stroke-width:2;transition:fill .25s}
+.hnode text{fill:var(--ink);font-weight:600} .hnode:hover rect,.hnode.sel rect{fill:var(--adm)} .hnode:hover text,.hnode.sel text{fill:var(--bg)}
+.hnode:focus-visible rect{stroke-width:4}
+.spoke{stroke:var(--adm);stroke-width:2;opacity:.3;stroke-dasharray:6 6;animation:dash 1.6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-24}}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:.6em}
+.cmp>div{background:var(--bg);border-radius:8px;padding:.7em .8em;min-width:0}
+.cmp h4{margin:0 0 .3em;font-size:.85em;font-weight:600}
+.cmp ul{margin:0;padding-inline-start:1.1em;font-size:.92em;display:grid;gap:.25em}
+.detail{display:grid;gap:.7em;align-content:start}
+.detail h3{margin:0;font-size:1.3em;font-weight:600;color:var(--adm)}
 
-/* מסך 3: חוק */
-.s-law{grid-template-columns:1fr 1.2fr}
-.laws{display:grid;gap:.45em;grid-template-rows:repeat(8,1fr);min-height:0}
-.law{display:flex;align-items:center;gap:.8em;text-align:start;padding:.3em .9em;background:var(--soft);animation:rise .6s both}
-.law::before{content:"";width:.5em;height:1.6em;border-radius:3px;background:var(--flow);flex:none}
-.law:hover{transform:translateX(-4px)}
-.cycle{position:relative;min-height:22em}
-.cycle svg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px)}
-.ring{fill:none;stroke:var(--line);stroke-width:2}
-.spin{transform-origin:300px 280px;animation:spin 26s linear infinite}
-@keyframes spin{to{transform:rotate(-360deg)}}
-.pulse{animation:pulse 2.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
-@keyframes pulse{50%{transform:scale(1.07)}}
+/* מסך 3: תהליך */
+.s-proc{grid-template-rows:auto auto 1fr}
+.lanes{display:grid;gap:1.1em}
+.lane h3{margin:0 0 .4em;font-size:1em;font-weight:600}
+.track{position:relative;display:grid;gap:.4em}
+.seg{height:2.1em;border-radius:6px;color:#fff;display:flex;align-items:center;padding:0 .8em;font-size:.88em;width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1);white-space:nowrap;overflow:hidden}
+.seg.a{background:var(--adm)} .seg.b{background:color-mix(in srgb,var(--adm) 55%,var(--bg))} .seg.k{background:var(--good)}
+:root[data-theme="dark"] .seg,:root:not([data-theme="light"]) .seg{color:#0b1220}
+.row2{position:relative}
+.finish{position:absolute;top:-.3em;bottom:-.3em;width:3px;background:var(--ink);opacity:.5;border-radius:2px;transition:inset-inline-start 1.2s}
 
-/* מסך 4: פרויקטים */
-.s-projects{grid-template-columns:repeat(3,1fr);align-content:stretch}
-.col{display:flex;flex-direction:column;gap:calc(var(--u)*.7)}
-.col h2{margin:0;font-weight:600;font-size:1em;color:var(--mute);letter-spacing:.03em}
-.proj{background:var(--soft);border-radius:10px;padding:calc(var(--u)*.8) calc(var(--u)*.9);flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:.4em;animation:rise .7s both;position:relative;overflow:hidden}
-.proj .n{font-size:2.4em;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.proj .u{font-size:.85em;color:var(--mute)}
-.proj .l{font-weight:400}
-.proj .glow{position:absolute;inset-inline-start:0;bottom:0;height:5px;width:0;background:var(--flow);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* שכבת אשדוד */
+.s-now,.s-next{grid-template-columns:1fr 1fr}
+.cards{display:grid;gap:.55em;align-content:start}
+.card{background:var(--bg);border-radius:8px;padding:.6em .8em;border-inline-start:5px solid var(--C);animation:rise .6s both}
+.card b{display:block}
+.card span.t{font-size:.9em;color:var(--ink)}
+.card.good{--C:var(--good);color:inherit} .card.bad{--C:var(--bad);color:inherit} .card.nowc{--C:var(--now)} .card.nextc{--C:var(--next)}
+.col h2{margin:0 0 .5em;font-size:1em;font-weight:600}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:.5em;align-items:center;margin:.3em 0}
+.ba .v{font-size:2em;font-weight:300;font-variant-numeric:tabular-nums;color:var(--now)}
+.ba .arrow{color:var(--mute)}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:.5em;margin-bottom:.7em}
+.mini .big .n{font-size:1.8em;color:var(--now)}
+.pair{display:grid;gap:.4em}
+.pb{height:1.1em;background:var(--bg);border-radius:4px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--bad);transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
+.pb i.g{background:var(--good)}
+.time{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:.4em;margin-bottom:.7em}
+.time::before{content:"";position:absolute;inset-inline:6%;top:.8em;height:3px;background:var(--next);opacity:.4;transform-origin:right;animation:growx 1.2s both}
+@keyframes growx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.tm{text-align:center;position:relative}
+.tm i{display:block;width:1.6em;height:1.6em;margin:0 auto .3em;border-radius:50%;background:var(--bg);border:3px solid var(--next);position:relative;z-index:1}
+.tm.cur i{background:var(--next);animation:pulseN 2s ease-in-out infinite}
+@keyframes pulseN{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--next) 22%,transparent)}}
+.tm span{font-size:.82em;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:.4em}
+.chip{background:var(--bg);padding:.3em .8em;border-radius:99px;font-size:.9em;animation:rise .6s both}
 
-/* מסך 5: יעדים */
-.s-goals{grid-template-columns:1.25fr 1fr}
-.goals{display:grid;gap:calc(var(--u)*.6);grid-template-rows:repeat(4,1fr)}
-.goal{display:grid;grid-template-columns:auto 1fr;gap:1em;align-items:center;background:var(--soft);border-radius:10px;padding:calc(var(--u)*.7) calc(var(--u)*.9);animation:rise .6s both}
-.goal .dot{width:2.2em;height:2.2em;border-radius:50%;background:var(--flow);color:var(--bg);display:grid;place-items:center;font-weight:600}
-.goal b{display:block}
-.goal span{color:var(--mute);font-size:.9em}
-.permits{display:flex;flex-wrap:wrap;gap:.5em;align-content:flex-start}
-.permits .chip{background:var(--bg);padding:.5em .9em;border-radius:99px;animation:rise .6s both}
-.permits h3{width:100%;margin:0 0 .3em;font-weight:600;font-size:1em}
+/* מסך התאמה */
+.s-fit{grid-template-rows:auto auto 1fr}
+.sumbar{display:flex;gap:.5em;flex-wrap:wrap;align-items:center}
+.st{display:inline-flex;align-items:center;gap:.4em;padding:.1em .8em;border-radius:99px;font-size:.82em;font-weight:600;color:#fff;white-space:nowrap}
+.st.ok{background:var(--good)} .st.way{background:var(--warn);color:#1b1a14} .st.gap{background:var(--bad)} .st.na{background:var(--mute)}
+.mx{display:grid;grid-template-columns:.9fr 1.15fr 1.15fr 1.15fr .6fr;gap:.45em;min-width:62em}
+.mx>*{background:var(--soft);border-radius:8px;padding:.35em .7em;min-width:0;font-size:.88em}
+.mx .h{font-weight:600;color:#fff;font-size:.85em}
+.mx .h.a{background:var(--adm)} .mx .h.n{background:var(--now)} .mx .h.x{background:var(--next)} .mx .h.k{background:var(--ink);color:var(--bg)}
+.mx .ax{font-weight:600}
+.mx .r{animation:rise .5s both}
+.mxwrap{overflow:auto;min-height:0;padding-bottom:.3em}
+.cell small{display:block;color:var(--mute);font-size:.8em;margin-top:.2em}
 
-/* מסך 6: תדריך */
+/* תדריך */
 .s-brief{grid-template-columns:1fr 1fr 0.9fr}
 .brief h3{margin:0 0 .6em;font-weight:600;font-size:1em}
-.track{display:grid;gap:.3em}
-.step{display:grid;grid-template-columns:auto 1fr;gap:.8em;text-align:start;padding:.3em .8em;background:var(--bg)}
-.step em{font-style:normal;color:var(--flow);font-weight:600;min-width:1.4em}
-.step small{display:block;color:var(--mute);font-size:.8em}
+.tr{display:grid;gap:.3em}
+.step{display:grid;grid-template-columns:auto 1fr;gap:.8em;padding:.35em .8em;background:var(--bg);border-radius:8px;border-inline-start:5px solid var(--L)}
+.step em{font-style:normal;font-weight:600;min-width:1.2em}
+.step small{display:block;color:var(--mute);font-size:.82em}
 .qa{display:grid;gap:.4em}
 .q{background:var(--bg);border-radius:8px}
 .q>button{width:100%;text-align:start;background:transparent;display:flex;justify-content:space-between;gap:1em}
 .q>button::after{content:"+";color:var(--mute)} .q.open>button::after{content:"\2212"}
-.q .a{display:none;padding:0 .9em .8em;color:var(--ink)}
+.q .a{display:none;padding:0 .9em .8em}
 .q.open .a{display:block}
-.q .gap{color:var(--bad);font-size:.85em;display:block;margin-top:.35em}
+.q .gp{color:var(--bad);font-size:.85em;display:block;margin-top:.35em}
 .check{display:grid;gap:.4em}
 .check label{display:flex;gap:.7em;align-items:flex-start;padding:.45em .7em;background:var(--bg);border-radius:8px;cursor:pointer}
 .check input{margin-top:.35em;accent-color:var(--good);width:1.1em;height:1.1em}
 .check input:checked+span{color:var(--mute);text-decoration:line-through}
-.aud{display:flex;gap:.4em;flex-wrap:wrap;margin-bottom:.8em}
-.open-line{margin:0 0 .8em;padding:.7em .9em;background:var(--bg);border-radius:8px}
+.aud{display:flex;gap:.4em;flex-wrap:wrap;margin-bottom:.7em}
+.open-line{margin:0 0 .8em;padding:.6em .8em;background:var(--bg);border-radius:8px}
 
 .pres main{cursor:none}
 @media (max-width:900px){
-  .s-situation,.s-law,.s-goals,.s-brief{grid-template-columns:1fr}
-  .s-projects{grid-template-columns:1fr}
-  .head h1{font-size:1.6em} .kpi .n{font-size:2.2em} nav button{min-width:6.2em}
-  .view{display:block} .view[hidden]{display:none} .view>*{margin-bottom:1em}
-  .flowbox svg{min-height:11em}
+  .s-admin,.s-axes,.s-now,.s-next,.s-brief{grid-template-columns:1fr}
+  .head h1{font-size:1.5em} nav button{min-width:5.6em}
+  .view{display:block} .view>*{margin-bottom:1em}
+  .num3,.mini{grid-template-columns:1fr 1fr} .cmp{grid-template-columns:1fr}
+  .hub{min-height:19em}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
 <header>
-  <a class="brand" href="#situation">מפת הרישוי<small>אגף רישוי בניה, מנהל הנדסה, אשדוד</small></a>
+  <a class="brand" href="#admin">מפת הרישוי<small>אסטרטגיית המינהל מול היערכות אשדוד</small></a>
   <div class="menuwrap">
     <button class="logo" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-label="תפריט">ר</button>
     <div class="menu" id="menu" hidden>
@@ -166,115 +197,167 @@ svg text{font-family:var(--font);fill:var(--ink)}
     </div>
   </div>
 </header>
-
 <nav id="tabs" aria-label="מסכי האפליקציה"></nav>
 <div class="progress" aria-hidden="true"><i id="prog"></i></div>
 
 <main>
-<!-- 1 -->
-<section class="view s-situation" id="v-situation" hidden>
+<!-- 1 המינהל: האסטרטגיה -->
+<section class="view s-admin L-adm" id="v-admin" hidden>
   <div class="head" style="grid-column:1/-1">
-    <h1>בטיפול פי 4.5 ממספר ההיתרים שיצאו</h1>
-    <p>שנת 2025 באגף: <mark>1,284</mark> בקשות בטיפול מול <mark>287</mark> היתרים. זה הנתון שהאסטרטגיה באה לשנות.</p>
+    <span class="layer">שכבה: המינהל</span>
+    <h1>המינהל לומד לפני שהוא מחליט</h1>
+    <p>אסטרטגיית הרישוי החדשה נמצאת בשלב איסוף ידע ובחינת חלופות. <mark>לא פורסמו לוחות זמנים, חקיקה או צעדים אופרטיביים.</mark></p>
   </div>
-  <div class="kpis">
-    <div class="kpi"><div class="n" data-count="2264">0</div><div class="l">יחידות דיור</div></div>
-    <div class="kpi"><div class="n" data-count="287">0</div><div class="l">היתרי בנייה</div></div>
-    <div class="kpi"><div class="n" data-count="494">0</div><div class="l">בקשות שנדונו בוועדה או ברשות רישוי</div></div>
-    <div class="kpi hot"><div class="n" data-count="1284">0</div><div class="l">בקשות בטיפול</div></div>
+  <div class="panel">
+    <div class="stripe"></div>
+    <b>הבעיה שהמינהל מציג: משך היתר בישראל</b>
+    <div class="num3" style="margin-top:.6em">
+      <div class="big"><div class="n" data-count="319">0</div><div class="l">ימי עבודה, מסלול מלא (מבקר המדינה, 2021)</div></div>
+      <div class="big"><div class="n" data-count="300" data-plus="1">0</div><div class="l">ימי עבודה, מסלול רגיל (הסקירה, 2026)</div></div>
+      <div class="big"><div class="n" data-count="400" data-plus="1">0</div><div class="l">ימי עבודה, מסלול עם הקלות</div></div>
+    </div>
+    <p class="cap" style="margin:.7em 0 0">עשור של רפורמות ותיקוני חקיקה לא שינה את התוצאה, לפי הסקירה. מכאן הצורך במהלך לאומי.</p>
+    <span class="src">מקור: סקירה בינלאומית, מינהל התכנון, מרץ 2026, עמ' 3 ו-6</span>
   </div>
-  <div class="panel bars">
-    <div class="bar"><div class="row"><span>בקשות בטיפול</span><b>1,284</b></div><div class="track"><div class="fill" data-w="100" style="background:var(--bad)"></div></div></div>
-    <div class="bar"><div class="row"><span>נדונו בוועדה או ברשות רישוי</span><b>494</b></div><div class="track"><div class="fill" data-w="38.5" style="background:var(--flow)"></div></div></div>
-    <div class="bar"><div class="row"><span>היתרי בנייה שיצאו</span><b>287</b></div><div class="track"><div class="fill" data-w="22.4" style="background:var(--good)"></div></div></div>
-    <p class="ratio"><b>1,284 לעומת 287: יחס של כ-4.5</b><br><span class="cap">חישוב שלי משני נתוני המצגת. ההשוואה היא תמונת מצב ולא קצב טיפול, ולכן היא הערכה.</span></p>
+  <div class="panel">
+    <div class="stripe"></div>
+    <b>איפה המהלך עומד</b>
+    <div class="road" style="margin-top:.8em">
+      <div class="rs done"><div class="d">1</div><div><b>סקירה בינלאומית</b><span>חמישה מקרי מבחן: אנגליה, דנמרק, הולנד, אסטוניה וניו יורק. סינגפור ודובאי בהיבט הטכנולוגי.</span></div></div>
+      <div class="rs now"><div class="d">2</div><div><b>שיתוף ציבור</b><span>מפגשי חשיפה מקוונים ודיון מקצועי עם אנשי תכנון ורישוי. מספר מוגבל והרשמה מראש.</span></div></div>
+      <div class="rs todo"><div class="d">3</div><div><b>גיבוש האסטרטגיה</b><span>לא צוינו לוחות זמנים. בשלב זה אין חקיקה.</span></div></div>
+    </div>
+    <p style="margin:.9em 0 0">המטרה: רישוי <b>יעיל, מתקדם, דיגיטלי ושקוף</b>.</p>
+    <span class="src">מקור: סקירה, עמ' 3; כתבה במרכז הנדל"ן על פתיחת המהלך</span>
+    <span class="tag">הכתבה אינה מתארכת. לבדוק מצב עדכני ב-gov.il</span>
   </div>
 </section>
 
-<!-- 2 -->
-<section class="view s-journey" id="v-journey" hidden>
+<!-- 2 המינהל: צירים -->
+<section class="view s-axes L-adm" id="v-axes" hidden>
+  <div class="head" style="grid-column:1/-1">
+    <span class="layer">שכבה: המינהל</span>
+    <h1>שישה צירים שהמינהל מזהה בלמידה מהעולם</h1>
+    <p>לחצו על ציר. כל ציר מציג מה נמצא במדינות שנסקרו, ומה המינהל מתאר בישראל. אלה <mark>תובנות</mark> ולא החלטות.</p>
+  </div>
+  <div class="panel hub"><svg id="hubSvg" viewBox="0 0 640 520" role="img" aria-label="שישה צירי אסטרטגיית הרישוי"></svg></div>
+  <div class="panel detail" id="axDetail"></div>
+</section>
+
+<!-- 3 המינהל: תהליך -->
+<section class="view s-proc L-adm" id="v-process" hidden>
   <div class="head">
-    <h1>פחות סבבים בדרך להיתר</h1>
-    <p>היעד לשנת 2026: <mark>הקטנת סבבי בדיקה</mark> ומסלול מהיר לבקשות בעלות השפעה, בשיטת הרמזור.</p>
+    <span class="layer">שכבה: המינהל</span>
+    <h1>בישראל הבדיקות טוריות, בעולם הן מקבילות</h1>
+    <p>הסקירה מצאה שבכל המדינות הנסקרות בדיקה מרחבית ובדיקת תכן יכולות להתבצע במקביל. בישראל הן אחת אחרי השנייה, עם <mark>ריבוי סבבי תיקונים</mark>.</p>
   </div>
-  <div class="ctl">
-    <button id="modeToday" class="on">היום</button>
-    <button id="modeGoal">יעד 2026</button>
-    <span class="legend"><span><i style="background:var(--bad)"></i>חזרה לתיקון</span><span><i style="background:var(--good)"></i>מסלול מהיר</span><span><i style="background:var(--flow)"></i>מסלול רגיל</span></span>
-    <span class="tag">סכמה להמחשה, לא תיעוד נוהל</span>
+  <div class="ctl" style="display:flex;gap:.5em;align-items:center;flex-wrap:wrap">
+    <button id="pReplay">הפעלה מחדש</button><span class="tag">סכמה של מבנה, לא של משך בפועל</span>
   </div>
-  <div class="panel flowbox">
-    <svg id="flowSvg" viewBox="0 0 1000 340" role="img" aria-label="מסלול בקשה להיתר, מימין לשמאל, עם חזרות לתיקון"></svg>
-    <div class="note" id="flowNote"><b>לחצו על שלב</b> כדי לראות מה קורה בו.</div>
-  </div>
-</section>
-
-<!-- 3 -->
-<section class="view s-law" id="v-law" hidden>
-  <div class="head" style="grid-column:1/-1">
-    <h1>שמונה שינויי חוק, מענה אחד מסודר</h1>
-    <p>ב-2025 אושרו תיקונים ותקנות בחוק התכנון והבנייה. <mark>יישום נכון</mark> מפחית רגולציה ומקצר לוחות זמנים.</p>
-  </div>
-  <div class="laws" id="laws"></div>
-  <div class="panel cycle">
-    <svg viewBox="0 0 600 560" id="cycleSvg" role="img" aria-label="מעגל היערכות: למידה, נהלים ומערכות, הכוונה לעורכים, תוצאה"></svg>
+  <div class="panel lanes">
+    <div class="lane"><h3 class="bad">ישראל, כפי שמתארת הסקירה: תהליך טורי</h3>
+      <div class="track"><div class="seg a" data-w="42">בקרה מרחבית</div><div class="seg b" data-w="42" data-d="1.1">בקרת תכן</div></div>
+      <span class="cap">בקרת התכן של כ-80% מהבקשות להיתר מגורים נעשית בוועדה המקומית. אין הלימה בין לוחות הזמנים בתקנות לבין המשך בפועל.</span></div>
+    <div class="lane"><h3 class="good">אנגליה, הולנד ודנמרק: תהליך מקבילי</h3>
+      <div class="track"><div class="seg a" data-w="42">בדיקה מרחבית (הוועדה)</div><div class="seg b" data-w="42">בקרת תכן (גורמים פרטיים מוסמכים)</div></div>
+      <span class="cap">הוועדה מתמקדת בבקרה מרחבית ובפיקוח על הגורמים הפרטיים.</span></div>
+    <div class="lane"><h3>אסטוניה, סינגפור ודובאי: בדיקות אוטומטיות בקליטה</h3>
+      <div class="track"><div class="seg k" data-w="14">אוטומטי</div><div class="seg a" data-w="42">בדיקה מקצועית</div></div>
+      <span class="cap">בדיקת שלמות ותקינות, משוב מיידי למגיש, ובודקי ההיתרים מתמקדים בנושאים מקצועיים.</span></div>
+    <span class="src">מקור: סקירה, עמ' 5, 98 ו-101</span>
   </div>
 </section>
 
-<!-- 4 -->
-<section class="view s-projects" id="v-projects" hidden>
+<!-- 4 אשדוד: מצב קיים -->
+<section class="view s-now L-now" id="v-now" hidden>
   <div class="head" style="grid-column:1/-1">
-    <h1>פרויקטים שמכתיבים את סדר העדיפויות</h1>
-    <p>דיור, בריאות ותיירות, חינוך וספורט, בפארק לכיש וברובע המיוחד. <span class="tag">התאמת מספר לכותרת בקבוצת הדיור: לאימות מול המצגת</span></p>
+    <span class="layer">שכבה: אשדוד, מצב קיים</span>
+    <h1>אשדוד כבר מפעילה חלק מהפרקטיקות, וחסרה כוח אדם</h1>
+    <p>מה שאשדוד עושה היום, וגם מה שמעכב אותה. <mark>המקורות מסומנים בכל כרטיס.</mark></p>
   </div>
-  <div class="col"><h2>דיור ומרחב מוגן</h2>
-    <div class="proj"><div class="l">ממ"דים</div><div class="n" data-count="1178">0</div><div class="glow" data-w="100"></div></div>
-    <div class="proj"><div class="l">יחידות דיור, הרובע המיוחד</div><div class="n" data-count="350">0</div><div class="glow" data-w="30"></div></div>
-    <div class="proj"><div class="l">יחידות דיור, פארק לכיש</div><div class="n" data-count="608">0</div><div class="glow" data-w="52"></div></div>
+  <div class="col">
+    <div class="mini">
+      <div class="big"><div class="n" data-count="287">0</div><div class="l">היתרים, 2025</div></div>
+      <div class="big"><div class="n" data-count="1284">0</div><div class="l">בקשות בטיפול</div></div>
+      <div class="big"><div class="n" data-count="494">0</div><div class="l">נדונו בוועדה או ברשות</div></div>
+      <div class="big"><div class="n" data-count="367">0</div><div class="l">ימים להיתר רגיל, 2024</div></div>
+    </div>
+    <span class="src" style="margin:0 0 .6em">מקורות: מצגת סיכום אגף רישוי בניה 2025; סקירת המינהל, נספח 1, עמ' 104</span>
+    <h2 class="good">מה כבר עובד</h2>
+    <div class="cards" id="nowGood"></div>
   </div>
-  <div class="col"><h2>מבני ציבור וחינוך</h2>
-    <div class="proj"><div class="l">קמפוס אקדמי, סמי שמעון</div><div><span class="n" data-count="14000">0</span> <span class="u">מ"ר בנוי</span></div><div class="glow" data-w="100"></div></div>
-    <div class="proj"><div class="l">בי"ס יסודי, פארק לכיש</div><div><span class="n" data-count="5710">0</span> <span class="u">מ"ר בנוי</span></div><div class="glow" data-w="41"></div></div>
-    <div class="proj"><div class="l">אשכול גנ"י, פארק לכיש</div><div><span class="n" data-count="1580">0</span> <span class="u">מ"ר בנוי</span></div><div class="glow" data-w="11"></div></div>
-  </div>
-  <div class="col"><h2>בריאות, תיירות וספורט</h2>
-    <div class="proj"><div class="l">מבנה ארנה</div><div><span class="n" data-count="5000">0</span> <span class="u">מושבים</span></div><div class="glow" data-w="100"></div></div>
-    <div class="proj"><div class="l">מגדל אשפוז חדש, אסותא</div><div><span class="n" data-count="442">0</span> <span class="u">מיטות</span></div><div class="glow" data-w="9"></div></div>
-    <div class="proj"><div class="l">מלון פרימה</div><div><span class="n" data-count="208">0</span> <span class="u">יחידות</span></div><div class="glow" data-w="4"></div></div>
+  <div class="col">
+    <div class="panel" style="margin-bottom:.7em">
+      <b>זמן מענה של גורמים פנים-רשותיים בבקרה המרחבית</b>
+      <div class="ba"><div class="v" data-count="14">0</div><div class="arrow">ימים, ירידה אל</div><div class="v" data-count="10">0</div></div>
+      <span class="cap">בבקשות חירום (ממ"דים): 48 שעות.</span>
+      <div style="margin-top:.8em"><b>בקשות שלא מקבלות מענה</b>
+        <div class="pair" style="margin-top:.4em">
+          <div class="cap">בעבר, בעדות מהראיון: כ-1%</div><div class="pb"><i class="g" data-w="1"></i></div>
+          <div class="cap">היום, בעדות מהראיון: כ-30%</div><div class="pb"><i data-w="30"></i></div>
+        </div></div>
+      <span class="src">מקור: סקירה, נספח 1, עמ' 105. עדות רשות, לא נתון מנוהל</span>
+    </div>
+    <h2 class="bad">מה מעכב</h2>
+    <div class="cards" id="nowBad"></div>
   </div>
 </section>
 
-<!-- 5 -->
-<section class="view s-goals" id="v-goals" hidden>
+<!-- 5 אשדוד: מצב עתידי -->
+<section class="view s-next L-next" id="v-next" hidden>
   <div class="head" style="grid-column:1/-1">
-    <h1>ארבעה יעדים ל-2026, שבעה מסלולי היתרים</h1>
-    <p>שיטת הרמזור וצמצום סבבים הם הכלי. <mark>ההיתרים בפרויקטים המובילים</mark> הם המבחן.</p>
+    <span class="layer dash">שכבה: אשדוד, מצב עתידי</span>
+    <h1>אשדוד נערכת ב-2026 בשלושה כיוונים</h1>
+    <p>למידה והתאמה לחוק, כלי עבודה חדשים, והיתרים בפרויקטים מובילים. <mark>זו תוכנית אשדוד עצמה</mark> ולא תגובה לאסטרטגיית המינהל.</p>
   </div>
-  <div class="goals" id="goals"></div>
-  <div class="panel permits" id="permits"></div>
+  <div class="col">
+    <div class="time">
+      <div class="tm"><i></i><b>2025</b><br><span>שמונה שינויי חוק אושרו</span></div>
+      <div class="tm cur"><i></i><b>2026</b><br><span>יעדים ליישום</span></div>
+      <div class="tm"><i></i><b>אחרי 2026</b><br><span>לא תועד</span></div>
+    </div>
+    <h2>ההיערכות לחוק החדש</h2>
+    <div class="cards" id="nextPrep"></div>
+    <span class="src">מקור: מצגת סיכום אגף רישוי בניה 2025</span>
+  </div>
+  <div class="col">
+    <h2>יעדי 2026</h2>
+    <div class="cards" id="nextGoals"></div>
+    <h2 style="margin-top:.8em">היתרים בשבעה מסלולים</h2>
+    <div class="chips" id="nextPermits"></div>
+    <div class="panel" style="margin-top:.8em">
+      <b>מסמך מדיניות עירונית תכנונית</b> <span class="tag">טיוטת עבודה, ספטמבר 2026</span>
+      <p style="margin:.4em 0 0;font-size:.92em">יתרגם מדיניות להנחיות שמנחות בחינת תכניות והליכי רישוי. אינו תכנית סטטוטורית.</p>
+      <span class="src">מקור: מסמך המדיניות, פרק מבוא ומטרות</span>
+    </div>
+  </div>
 </section>
 
-<!-- 6 -->
-<section class="view s-brief" id="v-briefing" hidden>
+<!-- 6 התאמה -->
+<section class="view s-fit L-fit" id="v-fit" hidden>
+  <div class="head">
+    <span class="layer" style="--L:var(--ink)">המסך היחיד שמציב את השכבות זו לצד זו</span>
+    <h1>אשדוד בדרך בחמישה מתוך שמונה נושאים, והפער בכוח אדם</h1>
+    <p>כל שורה מציבה את תובנת המינהל מול מצב אשדוד, קיים ועתידי. <mark>עמודת ההערכה היא קריאה שלי</mark> ולא נתון.</p>
+  </div>
+  <div class="sumbar" id="fitSum"></div>
+  <div class="mxwrap"><div class="mx" id="fitMx"></div></div>
+</section>
+
+<!-- 7 תדריך -->
+<section class="view s-brief L-fit" id="v-briefing" hidden>
   <div class="head" style="grid-column:1/-1">
-    <h1>תדריך לאירוע: ארבע דקות, חמש הודעות</h1>
-    <p>בחרו קהל, עברו על מהלך הדברים ועל השאלות הצפויות. <span class="tag">ניסוחים: טיוטה שלי. נתונים: מהמצגת</span></p>
+    <span class="layer" style="--L:var(--ink)">הכנה לאירוע</span>
+    <h1>ארבע דקות: המינהל, אשדוד היום, אשדוד מחר, הפער</h1>
+    <p>בחרו קהל, עברו על מהלך הדברים ועל השאלות הצפויות. <span class="tag">ניסוחים: טיוטה שלי. נתונים: מהמקורות</span></p>
   </div>
   <div class="panel brief">
-    <h3>קהל</h3>
-    <div class="aud" id="aud"></div>
+    <h3>קהל</h3><div class="aud" id="aud"></div>
     <p class="open-line" id="openLine"></p>
-    <h3>מהלך הדברים</h3>
-    <div class="track" id="track"></div>
+    <h3>מהלך הדברים</h3><div class="tr" id="track"></div>
   </div>
-  <div class="panel brief">
-    <h3>שאלות צפויות</h3>
-    <div class="qa" id="qa"></div>
-  </div>
-  <div class="panel brief">
-    <h3>הכנה לפני האירוע <span class="cap" id="chkCount"></span></h3>
-    <div class="check" id="check"></div>
-  </div>
+  <div class="panel brief"><h3>שאלות צפויות</h3><div class="qa" id="qa"></div></div>
+  <div class="panel brief"><h3>הכנה לפני האירוע <span class="cap" id="chkCount"></span></h3><div class="check" id="check"></div></div>
 </section>
 </main>
 
@@ -282,159 +365,191 @@ svg text{font-family:var(--font);fill:var(--ink)}
 (function(){
 'use strict';
 var VIEWS=[
- {id:'situation',t:'תמונת מצב',s:'מספרי 2025'},
- {id:'journey',t:'מסע הבקשה',s:'מהגשה להיתר'},
- {id:'law',t:'חוק ותקנות',s:'שינויי 2025'},
- {id:'projects',t:'פרויקטים',s:'מרכזיים'},
- {id:'goals',t:'יעדי 2026',s:'ומבחן ההיתרים'},
- {id:'briefing',t:'תדריך לאירוע',s:'דברים, שאלות, הכנה'}
+ {id:'admin',t:'האסטרטגיה',s:'המינהל',L:'adm'},
+ {id:'axes',t:'שישה צירים',s:'המינהל',L:'adm'},
+ {id:'process',t:'תהליך',s:'המינהל',L:'adm'},
+ {gap:1},
+ {id:'now',t:'מצב קיים',s:'אשדוד',L:'now'},
+ {id:'next',t:'מצב עתידי',s:'אשדוד',L:'next'},
+ {gap:1},
+ {id:'fit',t:'התאמה',s:'שכבות זו לצד זו',L:'fit'},
+ {id:'briefing',t:'תדריך',s:'לאירוע',L:'fit'}
 ];
+var PAGES=VIEWS.filter(function(v){return v.id});
 var $=function(s,r){return (r||document).querySelector(s)};
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var cur=null, presTimer=null, progTimer=null;
 
-/* ניווט */
+/* ===== נתונים ===== */
+var AXES=[
+ {t:'ממשק תכנון ורישוי',p:'עמ\' 96',
+  w:['בדנמרק ובהולנד אין שלב ביניים בין תכנון לרישוי: התכנית המקומית מפורטת דיה, והרישוי טכני.','באנגליה שלב התכנון המפורט כולל חלק מהרישוי.'],
+  i:['עשוי לחלוף זמן רב בין אישור התכנון המפורט לרישוי.','ועדות מקומיות דורשות שלבי ביניים (בינוי, עיצוב, פיתוח) שאינם מוסדרים בחוק ומאריכים את המעבר.']},
+ {t:'איכות תכנון',p:'עמ\' 96',
+  w:['באנגליה, הולנד ודנמרק יש מדריכי עיצוב לאומיים ומקומיים מחייבים.','באנגליה ועדות ביקורת עיצוב, ובהולנד ועדת אסתטיקה סטטוטורית.'],
+  i:['אין מנגנון כזה במסגרת הסטטוטורית.','לוועדות המקומיות סמכות לקבוע הנחיות מרחביות, ובלבד שאינן סותרות תכנית או חוק.']},
+ {t:'תהליך הרישוי',p:'עמ\' 97 עד 99',
+  w:['היוועצות מוקדמת מובנית בבריטניה, בדנמרק ובהולנד, ומקצרת סבבי תיקונים.','אין שלב חובה של מידע להיתר: המידע נגיש בפלטפורמות לאומיות.','מנהל תיק ייעודי מתכלל דרישות ומכריע בסתירות.'],
+  i:['היוועצות מוקדמת קיימת רק בחלק מהוועדות ואינה מוסדרת.','שלב המידע להיתר מאריך זמנים ויוצר שונות בין ועדות.','אין הגדרה סטטוטורית לגורם שמלווה בקשה לכל אורכה. בוועדות ספציפיות יש פרויקטור.']},
+ {t:'תשתית טכנולוגית',p:'עמ\' 101 עד 103',
+  w:['אסטוניה, הולנד, סינגפור ודובאי עברו ממסמכים דו-ממדיים למודלי BIM ולבדיקות אוטומטיות.','הטמעה הדרגתית: פיילוטים ברשויות מובילות, ובהמשך הרחבה.'],
+  i:['"רישוי זמין" פועלת מ-2016 על מודלים דו-ממדיים, בלי תמיכה ב-BIM.','אין אינטגרציה מלאה עם מערכות תכנון ומידע, והמערכת אינה מנהלת את התהליך מקצה לקצה.','אין שקיפות מלאה, ולא נאסף מידע שיטתי על זמני טיפול.']},
+ {t:'הון אנושי',p:'עמ\' 99 ו-100',
+  w:['הפרדה בין הדרג הפוליטי (מדיניות) לדרג המקצועי (החלטות היתר).','באנגליה ובאסטוניה מסלולי הכשרה והסמכה לעובדי רשויות.'],
+  i:['מחסור חמור בכוח אדם מקצועי בוועדות המקומיות.','במדגם של 13 רשויות: בממוצע שני אדריכלים או מתכננים לכ-10,000 יחידות דיור בתהליך.','אין הכשרה או הסמכה אחידה לעובדי הוועדות.']},
+ {t:'תמריצים ושקיפות',p:'עמ\' 100',
+  w:['בדנמרק ובהולנד מפורסמים דוחות ביצועי רשויות, כולל זמני טיפול.','בהולנד אפשר להטיל קנסות על רשות שחורגת מלוחות זמנים.','באנגליה הסכמי תכנון בתשלום מבטיחים לוחות זמנים.'],
+  i:['מודל המצוינות פועל כעשור, עם ניקוד משוקלל לוועדות.','יישומו מוגבל בגלל עומסים, מחסור בכוח אדם ושונות בין רשויות.']}
+];
+var NOW_GOOD=[
+ ['פורום אדריכל העיר','לבקשות מורכבות. מוזמנים כל הגורמים והיזם, ומופק פרוטוקול שהוא חלק משלב המידע להיתר.','עמ\' 104 ו-105'],
+ ['ניטור לוחות זמנים במערכת הוועדה','חיווי ללוחות זמנים והצפת מידע לבודק ההיתרים בשלב הבקרה המרחבית.','עמ\' 105'],
+ ['אדריכלית העיר מכריעה בסתירות','בין התייחסויות של גורמים פנים-רשותיים, אחרי תיאום מוקדם.','עמ\' 105'],
+ ['תקרה של שלושה סבבי תיקון','צוין בראיון, בהקשר של איכות עורכי הבקשות.','עמ\' 106']
+];
+var NOW_BAD=[
+ ['שתי מערכות מקוונות נפרדות','ניהול ועדה ורישוי זמין. קושי בסנכרון, במעקב ובבקרה.','עמ\' 105'],
+ ['תקן כוח אדם שאינו תואם את מורכבות הבקשות','בנוסף: שכר לא תואם אחריות, וקושי בגיוס ובהכשרה.','עמ\' 105'],
+ ['איכות משתנה של בקשות ושל עורכי הבקשות','גורמת לסבבי תיקונים חוזרים.','עמ\' 105 ו-106'],
+ ['שינויי חוק תכופים וגורמי חוץ איטיים','צריך מעקב והטמעה שוטפים. לוחות הזמנים של גורמי חוץ אינם מחייבים.','עמ\' 106']
+];
+var NEXT_PREP=[
+ ['למידה מעמיקה','של שמונת שינויי החוק והתקנות שאושרו ב-2025.'],
+ ['התאמת נהלי עבודה ומערכות מחשוב','כולל התאמת מערכת הוועדה.'],
+ ['מענה והכוונה לעורכי הבקשות','כדי להפחית רגולציה ולקצר לוחות זמנים.'],
+ ['מינוי גורם פנימי מתוך האגף','שמבצע התקשרות מול גורמי פנים וחוץ.'],
+ ['מיפוי חסמים ומציאת פתרונות','']
+];
+var NEXT_GOALS=[
+ ['הטמעה והפעלה של שיטת הרמזור','לשימוש גורמים פנים-עירוניים ולקידום בקשות בעלות השפעה.'],
+ ['הקטנת סבבי בדיקה',''],
+ ['נקודת ייחוס לפרויקטים מיוחדים','להפחתת רגולציה ולהקדמת מפגש עם גורמי כספים.'],
+ ['הוצאת היתרי בנייה בפרויקטים מובילים','שבעה מסלולים, למטה.']
+];
+var PERMITS=['מע"ר דרום','רובע מיוחד','פינוי בינוי','אנדלוסית','מלונות מרינה','מרכזים מסחריים בפארק לכיש','פרויקטים בפארק ההייטק'];
+var FIT=[
+ {a:'ממשק תכנון ורישוי',m:'רישוי טכני על גבי תכנית מפורטת, בלי שלבי ביניים.',n:'לא תועד בסקירה או במצגת.',x:'מסמך מדיניות עירונית תכנונית (טיוטה, ספטמבר 2026).',s:'way',sl:'בדרך'},
+ {a:'איכות תכנון',m:'מדריכי עיצוב מחייבים וועדות ביקורת עיצוב.',n:'פורום אדריכל העיר. הנחיות מרחביות: לאימות מול האגף.',x:'מסמך המדיניות העירונית.',s:'way',sl:'בדרך'},
+ {a:'היוועצות מוקדמת',m:'שלב מובנה לפני ההגשה, שמקצר סבבי תיקונים.',n:'פורום אדריכל העיר לבקשות מורכבות, עם פרוטוקול.',x:'נקודת ייחוס לפרויקטים מיוחדים והקדמת מפגש.',s:'ok',sl:'קיים'},
+ {a:'ליווי הבקשה',m:'מנהל תיק ייעודי שמכריע בסתירות.',n:'אדריכלית העיר מכריעה בסתירות בין גורמים.',x:'מינוי גורם פנימי שמתאם מול גורמי פנים וחוץ.',s:'way',sl:'בדרך'},
+ {a:'סבבי תיקון ובדיקות מקבילות',m:'בדיקות במקביל ופחות סבבים.',n:'תקרה של שלושה סבבים. ניטור לוחות זמנים: 14 ל-10 ימים.',x:'הקטנת סבבי בדיקה ושיטת הרמזור. מקביליות: לא תועד.',s:'way',sl:'בדרך'},
+ {a:'תשתית טכנולוגית',m:'BIM, בדיקות אוטומטיות ופלטפורמה אחודה.',n:'שתי מערכות מקוונות נפרדות.',x:'התאמת מערכת הוועדה ונהלים. BIM תלוי במערכת הארצית.',s:'way',sl:'בדרך'},
+ {a:'הון אנושי',m:'הכשרה, הסמכה והפרדה מהדרג הפוליטי.',n:'כ-30% מהבקשות ללא מענה, תקן ושכר לא תואמים.',x:'למידה מעמיקה של החוק. תוספת כוח אדם: לא תועד.',s:'gap',sl:'פער'},
+ {a:'תמריצים ושקיפות',m:'פרסום ביצועי רשויות, קנסות ותמריצים.',n:'367 ימים להיתר רגיל (2024), לפי נתוני המינהל.',x:'לא תועד.',s:'na',sl:'לא תועד'}
+];
+var AUD=[
+ {k:'צוות אגף רישוי',o:'המינהל לומד איך לשנות את הרישוי בישראל. נבדוק איפה אנחנו כבר שם, ואיפה לא.',ask:'בקשה: לאמת איתנו את הנקודות הפתוחות לפני שנציג הלאה.'},
+ {k:'הנהלת העירייה',o:'המינהל מגבש אסטרטגיית רישוי חדשה. אשדוד כבר מיישמת חלק, והפער העיקרי הוא כוח אדם.',ask:'בקשה: לבחון תוספת תקנים וחיבור המערכות.'},
+ {k:'עורכי בקשות',o:'שינויים צפויים ברישוי. אשדוד נערכת ומכוונת: בקשה שלמה חוסכת סבבים.',ask:'בקשה: להגיש בקשות שלמות ולהשתתף בפורום ההיוועצות.'}
+];
+var STEPS=[
+ ['המינהל: הבעיה והשלב','מעל 300 ימי עבודה להיתר. המינהל בשלב למידה, בלי לוחות זמנים.','adm'],
+ ['המינהל: שישה צירים','ממשק, איכות, תהליך, טכנולוגיה, הון אנושי, תמריצים.','adm'],
+ ['אשדוד היום','פורום אדריכל העיר, ניטור, תקרת סבבים. מנגד: שתי מערכות וחוסר כוח אדם.','now'],
+ ['אשדוד מחר','רמזור, פחות סבבים, גורם מתאם, התאמת מערכות ונהלים.','next'],
+ ['הפער','בדרך ברוב הצירים. הון אנושי ושקיפות: פער או לא תועד.','fit']
+];
+var QA=[
+ ['האם זו אסטרטגיה מחייבת?','לפי המינהל, בשלב זה זה מהלך למידה והנחת תשתית: איסוף ידע, בחינת חלופות ושיח. לא הוצגו לוחות זמנים, צעדים אופרטיביים או חקיקה.','תאריך הכתבה לא מצוין. לבדוק ב-gov.il.'],
+ ['מה הנתון על משך היתר בישראל?','מעל 300 ימי עבודה במסלול רגיל ומעל 400 עם הקלות. מבקר המדינה 2021: כ-319 ימי עבודה במסלול מלא.',''],
+ ['איפה אשדוד ביחס לתובנות?','בדרך בחמישה מתוך שמונה נושאים, קיימת בהיוועצות מוקדמת, ופער בהון האנושי. פירוט במסך ההתאמה. ההערכה שלי.',''],
+ ['מי יהיה מנהל התיק באשדוד?','ב-2026 ימונה גורם פנימי מתוך האגף שמתקשר מול גורמי פנים וחוץ. המינהל מתאר בעולם מנהל תיק עם סמכות להכריע בסתירות.','התפקיד והסמכות של הממונה באשדוד לא מוגדרים במצגת.'],
+ ['האם אשדוד עושה היוועצות מוקדמת?','כן, לבקשות מורכבות, בפורום אדריכל העיר עם כל הגורמים והיזם ועם פרוטוקול. לא בכל הבקשות.','לא ידוע אם הפורום חל על בקשות רגילות.'],
+ ['מה לגבי BIM ובדיקות אוטומטיות?','"רישוי זמין" פועלת על מודלים דו-ממדיים ואינה תומכת ב-BIM. זו מערכת ארצית, ואשדוד לא שולטת בה.','']
+];
+var CHECK=['להגדיר קהל ובקשה מרכזית','לאמת מול האגף: הנחיות מרחביות (מהדורה 18) אושרו?','לאמת: תקרת שלושה סבבים בתוקף, ונתון ה-30% עדכני','לברר: הרמזור, שם הממונה המתאם ובדיקות מקבילות','לבדוק ב-gov.il מה מצב האסטרטגיה העדכני','לבדוק חיבור ומסך באולם ולתרגל עם שעון'];
+
+/* ===== ניווט ===== */
 var tabs=$('#tabs');
 VIEWS.forEach(function(v){
-  var b=document.createElement('button');
-  b.dataset.id=v.id; b.innerHTML=v.t+'<span>'+v.s+'</span>';
-  b.onclick=function(){location.hash=v.id};
-  tabs.appendChild(b);
+  if(v.gap){var g=document.createElement('span');g.className='gap';tabs.appendChild(g);return}
+  var b=document.createElement('button'); b.dataset.id=v.id; b.className='L-'+v.L;
+  b.innerHTML=v.t+'<span>'+v.s+'</span>'; b.onclick=function(){location.hash=v.id}; tabs.appendChild(b);
 });
 function go(id){
-  if(!VIEWS.some(function(v){return v.id===id})) id='situation';
+  if(!PAGES.some(function(v){return v.id===id})) id='admin';
   if(id===cur) return; cur=id;
-  VIEWS.forEach(function(v){
-    $('#v-'+v.id).hidden = v.id!==id;
-  });
-  Array.prototype.forEach.call(tabs.children,function(b){b.classList.toggle('on',b.dataset.id===id)});
+  PAGES.forEach(function(v){$('#v-'+v.id).hidden=v.id!==id});
+  tabs.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id)});
   enter(id);
 }
 window.addEventListener('hashchange',function(){go(location.hash.slice(1))});
 
-/* ספירה והנפשות כניסה */
 function countUp(root){
   root.querySelectorAll('[data-count]').forEach(function(el){
-    var to=+el.dataset.count, t0=performance.now(), d=reduce?1:1300;
+    var to=+el.dataset.count, plus=el.dataset.plus, t0=performance.now(), d=reduce?1:1300;
     (function f(t){var p=Math.min(1,(t-t0)/d), e=1-Math.pow(1-p,3);
-      el.textContent=Math.round(to*e).toLocaleString('he-IL'); if(p<1) requestAnimationFrame(f)})(t0);
+      el.textContent=Math.round(to*e).toLocaleString('he-IL')+(plus&&p>=1?'+':''); if(p<1) requestAnimationFrame(f)})(t0);
   });
 }
 function grow(root){
   root.querySelectorAll('[data-w]').forEach(function(el){
-    var prop=el.classList.contains('glow')?'width':'width'; el.style.width='0';
-    requestAnimationFrame(function(){requestAnimationFrame(function(){el.style[prop]=el.dataset.w+'%'})});
+    el.style.width='0'; var delay=(+el.dataset.d||0)*1000;
+    if(el.classList.contains('seg')&&el.previousElementSibling&&el.previousElementSibling.classList.contains('seg')&&!el.dataset.d) delay=0;
+    setTimeout(function(){requestAnimationFrame(function(){el.style.width=el.dataset.w+'%'})},60+delay);
   });
 }
-function restagger(root,sel){
-  root.querySelectorAll(sel).forEach(function(el,i){el.style.animation='none';void el.offsetWidth;el.style.animation='';el.style.animationDelay=(i*70)+'ms'});
-}
+function stagger(root,sel){root.querySelectorAll(sel).forEach(function(el,i){el.style.animation='none';void el.offsetWidth;el.style.animation='';el.style.animationDelay=(i*70)+'ms'})}
 function enter(id){
-  var root=$('#v-'+id);
-  countUp(root); grow(root);
-  if(id==='projects') restagger(root,'.proj');
-  if(id==='law') restagger(root,'.law');
-  if(id==='goals'){restagger(root,'.goal');restagger(root,'.permits .chip')}
-  if(id==='journey') drawFlow();
+  var r=$('#v-'+id); countUp(r); grow(r);
+  r.querySelectorAll('.rs:not(:last-child)').forEach(function(e){e.style.animation='none';void e.offsetWidth;e.style.animation=''});
+  if(id==='now'){stagger(r,'.card')}
+  if(id==='next'){stagger(r,'.card');stagger(r,'.chip')}
+  if(id==='fit'){stagger(r,'.r')}
+  if(id==='axes'&&sel<0) pick(2);
 }
 
-/* מסך 2: מסלול */
-var NODES=[
- {t:'הגשת בקשה',n:'נקודת הכניסה. כאן נקבע אם הבקשה שלמה ואם היא בעלת השפעה.'},
- {t:'בדיקת שלמות',n:'בדיקה ראשונית של המסמכים. בקשה חסרה חוזרת למגיש, וזה הסבב הראשון.'},
- {t:'מיון ברמזור',n:'שיטת הרמזור משמשת גורמים פנים-עירוניים לקדם בקשות בעלות השפעה. היעד: הטמעה והפעלה ב-2026.'},
- {t:'סבבי בדיקה',n:'כל סבב הוא תיקון וחזרה. היעד לשנת 2026 הוא הקטנת מספר הסבבים.'},
- {t:'ועדה או רשות רישוי',n:'ב-2025 נדונו 494 בקשות. לשם נתיב הבקשות המורכבות והחריגות.'},
- {t:'היתר',n:'ב-2025 יצאו 287 היתרי בנייה. בכל היתר: הפחתת רגולציה ולוחות זמנים קצרים יותר.'}
-];
-var mode='today', selNode=-1;
-function arc(x1,x2,y,depth,cls,delay){
-  var d='M'+x1+','+y+' C'+x1+','+(y+depth)+' '+x2+','+(y+depth)+' '+x2+','+y;
-  return '<path class="arc" stroke="var(--'+cls+')" d="'+d+'" id="a'+delay+'"/>'+
-   '<circle r="6" fill="var(--'+cls+')"><animateMotion dur="3.2s" begin="'+delay+'s" repeatCount="indefinite" path="'+d+'"/></circle>';
-}
-function drawFlow(){
-  var svg=$('#flowSvg'), xs=[890,725,560,395,230,70], W=136, H=66, y=150, s='';
-  s+='<path d="M890,'+y+' H70" stroke="var(--flow)" stroke-width="2.5" fill="none" opacity=".35"/>';
-  if(mode==='today'){
-    s+=arc(395,725,y+31,70,'bad',0)+arc(395,560,y+31,110,'bad',.9)+arc(230,725,y+31,150,'bad',1.8);
-  } else {
-    s+=arc(395,725,y+31,70,'bad',0);
-    s+='<path class="arc" stroke="var(--good)" d="M560,'+(y-31)+' C560,10 230,10 230,'+(y-31)+'" style="stroke-dasharray:none"/>';
-    s+='<circle r="7" fill="var(--good)"><animateMotion dur="2.2s" repeatCount="indefinite" path="M560,'+(y-31)+' C560,10 230,10 230,'+(y-31)+'"/></circle>';
-    s+='<text x="395" y="28" text-anchor="middle" font-size="19" font-weight="600" style="fill:var(--good)">מסלול מהיר לבקשות בעלות השפעה</text>';
-  }
-  s+='<circle r="7" fill="var(--flow)"><animateMotion dur="'+(mode==='goal'?'4.5':'7')+'s" repeatCount="indefinite" path="M890,'+y+' H70"/></circle>';
-  NODES.forEach(function(n,i){
-    s+='<g class="node'+(i===selNode?' sel':'')+'" tabindex="0" role="button" data-i="'+i+'" aria-label="'+n.t+'">'+
-       '<rect x="'+(xs[i]-W/2)+'" y="'+(y-H/2)+'" width="'+W+'" height="'+H+'" rx="8"/>'+
-       '<text x="'+xs[i]+'" y="'+(y+6)+'" text-anchor="middle" font-size="16" font-weight="400">'+n.t+'</text></g>';
+/* ===== מסך 2: צירים ===== */
+var sel=-1;
+function drawHub(){
+  var cx=320,cy=260,R=190,W=190,H=54,s='';
+  AXES.forEach(function(a,i){
+    var ang=(-90+i*60)*Math.PI/180, x=cx+R*Math.cos(ang)*1.12, y=cy+R*Math.sin(ang)*.98;
+    s+='<line class="spoke" x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'"/>';
+    a._x=x;a._y=y;
   });
-  var cnt = mode==='today' ? 'שלוש חזרות לדוגמה' : 'חזרה אחת לדוגמה';
-  s+='<text x="560" y="'+(mode==='today'?318:262)+'" text-anchor="middle" font-size="16" style="fill:var(--mute)">'+cnt+', להמחשה בלבד</text>';
-  svg.innerHTML=s;
-  svg.querySelectorAll('.node').forEach(function(g){
-    var pick=function(){selNode=+g.dataset.i;$('#flowNote').innerHTML='<b>'+NODES[selNode].t+'.</b> '+NODES[selNode].n;drawFlow()};
-    g.onclick=pick; g.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}};
+  s+='<circle cx="'+cx+'" cy="'+cy+'" r="62" fill="var(--adm)"/><text x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" font-size="17" font-weight="600" style="fill:var(--bg)">אסטרטגיית</text><text x="'+cx+'" y="'+(cy+18)+'" text-anchor="middle" font-size="17" font-weight="600" style="fill:var(--bg)">הרישוי</text>';
+  AXES.forEach(function(a,i){
+    s+='<g class="hnode'+(i===sel?' sel':'')+'" tabindex="0" role="button" data-i="'+i+'" aria-label="'+a.t+'"><rect x="'+(a._x-W/2)+'" y="'+(a._y-H/2)+'" width="'+W+'" height="'+H+'" rx="10"/><text x="'+a._x+'" y="'+(a._y+6)+'" text-anchor="middle" font-size="17">'+a.t+'</text></g>';
+  });
+  var svg=$('#hubSvg'); svg.innerHTML=s;
+  svg.querySelectorAll('.hnode').forEach(function(g){
+    var f=function(){pick(+g.dataset.i)}; g.onclick=f; g.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}};
   });
 }
-$('#modeToday').onclick=function(){mode='today';$('#modeToday').classList.add('on');$('#modeGoal').classList.remove('on');drawFlow()};
-$('#modeGoal').onclick=function(){mode='goal';$('#modeGoal').classList.add('on');$('#modeToday').classList.remove('on');drawFlow()};
+function pick(i){
+  sel=i; drawHub(); var a=AXES[i];
+  var li=function(arr){return '<ul>'+arr.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'};
+  var d=$('#axDetail');
+  d.innerHTML='<h3>'+a.t+'</h3><div class="cmp"><div class="rise"><h4 class="good">במדינות שנסקרו</h4>'+li(a.w)+'</div><div class="rise" style="animation-delay:.12s"><h4 class="bad">בישראל, לפי המינהל</h4>'+li(a.i)+'</div></div><span class="src">מקור: סקירה בינלאומית, מינהל התכנון, מרץ 2026, '+a.p+'</span><p class="cap" style="margin:0">כל הנאמר כאן מתאר את המינהל. אשדוד מופיעה במסכים אחרים.</p>';
+}
 
-/* מסך 3: חוק */
-var LAWS=['שינוי שימוש למטרות עסק','תיקון 163: שינויים ביחס לגודל המרחב המוגן','תיקונים 134 ו-160: הקלה, שימוש חורג וסטייה מתכנית','שטח כולל','תוקפו של היתר או החלטת ועדה','הרחבת סמכויות מכוני בקרה','חובת התקנת מתקנים פוטו-וולטאיים','מורשה להיתר'];
-$('#laws').innerHTML=LAWS.map(function(l){return '<div class="law">'+l+'</div>'}).join('');
+/* ===== מסך 3 ===== */
+$('#pReplay').onclick=function(){grow($('#v-process'))};
+
+/* ===== כרטיסים ===== */
+function cards(el,arr,cls,withSrc){
+  $(el).innerHTML=arr.map(function(c){return '<div class="card '+cls+'"><b>'+c[0]+'</b>'+(c[1]?'<span class="t">'+c[1]+'</span>':'')+(withSrc&&c[2]?'<br><span class="src">סקירה, '+c[2]+'</span>':'')+'</div>'}).join('');
+}
+cards('#nowGood',NOW_GOOD,'good',true); cards('#nowBad',NOW_BAD,'bad',true);
+cards('#nextPrep',NEXT_PREP,'nextc',false);
+$('#nextGoals').innerHTML=NEXT_GOALS.map(function(c,i){return '<div class="card nextc"><b>'+(i+1)+'. '+c[0]+'</b>'+(c[1]?'<span class="t">'+c[1]+'</span>':'')+'</div>'}).join('');
+$('#nextPermits').innerHTML=PERMITS.map(function(p){return '<span class="chip">'+p+'</span>'}).join('');
+
+/* ===== מסך התאמה ===== */
 (function(){
-  var cx=300, cy=280, r=185, items=[
-   {t:'למידה מעמיקה',a:-90},{t:'התאמת נהלי עבודה ומערכות מחשוב',a:0},{t:'מענה והכוונה לעורכי הבקשות',a:90},{t:'מיפוי חסמים ופתרונות',a:180}];
-  var s='<circle class="ring" cx="'+cx+'" cy="'+cy+'" r="'+r+'"/>';
-  s+='<g class="spin"><circle r="9" cx="'+cx+'" cy="'+(cy-r)+'" fill="var(--flow)"/></g>';
-  items.forEach(function(it){
-    var x=cx+r*Math.cos(it.a*Math.PI/180), y=cy+r*Math.sin(it.a*Math.PI/180);
-    var w=it.t.split(' '), h=Math.ceil(w.length/2), lines=w.length>2?[w.slice(0,h).join(' '),w.slice(h).join(' ')]:[it.t];
-    var bw=170, bh=lines.length>1?62:46;
-    s+='<g><rect x="'+(x-bw/2)+'" y="'+(y-bh/2)+'" width="'+bw+'" height="'+bh+'" rx="12" fill="var(--bg)" stroke="var(--flow)" stroke-width="2"/>'+
-       '<text x="'+x+'" y="'+(y-(lines.length-1)*9+5)+'" text-anchor="middle" font-size="15" font-weight="600">'+lines.map(function(l,k){return '<tspan x="'+x+'" dy="'+(k?18:0)+'">'+l+'</tspan>'}).join('')+'</text></g>';
+  var cnt={ok:0,way:0,gap:0,na:0}, lab={ok:'קיים',way:'בדרך',gap:'פער',na:'לא תועד'};
+  FIT.forEach(function(f){cnt[f.s]++});
+  $('#fitSum').innerHTML=['ok','way','gap','na'].map(function(k){return '<span class="st '+k+'">'+lab[k]+': '+cnt[k]+'</span>'}).join('')+'<span class="cap">מתוך '+FIT.length+' נושאים. הערכה שלי לפי המקורות.</span>';
+  var h='<div class="h a">המינהל: מה מציע</div><div class="h n">אשדוד: מצב קיים</div><div class="h x">אשדוד: מצב עתידי</div><div class="h k">הערכת התאמה</div>';
+  h='<div class="h k">נושא</div>'+h;
+  FIT.forEach(function(f){
+    h+='<div class="r ax">'+f.a+'</div><div class="r">'+f.m+'</div><div class="r">'+f.n+'</div><div class="r">'+f.x+'</div><div class="r"><span class="st '+f.s+'">'+f.sl+'</span></div>';
   });
-  s+='<g class="pulse"><circle cx="'+cx+'" cy="'+cy+'" r="92" style="fill:var(--good)" opacity=".14"/>'+
-     '<text x="'+cx+'" y="'+(cy-14)+'" text-anchor="middle" font-size="19" font-weight="600" style="fill:var(--good)">הפחתת רגולציה</text>'+
-     '<text x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle" font-size="19" font-weight="600" style="fill:var(--good)">וקיצור לוחות זמנים</text>'+
-     '<text x="'+cx+'" y="'+(cy+38)+'" text-anchor="middle" font-size="13" style="fill:var(--mute)">גורם פנימי מתאם מול כולם</text></g>';
-  $('#cycleSvg').innerHTML=s;
+  $('#fitMx').innerHTML=h;
 })();
 
-/* מסך 5 */
-var GOALS=[
- ['הטמעה והפעלה של שיטת הרמזור','לשימוש גורמים פנים-עירוניים ולקידום בקשות בעלות השפעה'],
- ['הקטנת סבבי בדיקה','פחות חזרות לתיקון בדרך להיתר'],
- ['נקודת ייחוס לפרויקטים מיוחדים','הפחתת רגולציה והקדמת המפגש עם גורמי הכספים'],
- ['הוצאת היתרי בנייה בפרויקטים המובילים','שבעה מסלולים, מופיעים מימין']
-];
-$('#goals').innerHTML=GOALS.map(function(g,i){return '<div class="goal"><div class="dot">'+(i+1)+'</div><div><b>'+g[0]+'</b><span>'+g[1]+'</span></div></div>'}).join('');
-var PERMITS=['מע"ר דרום','רובע מיוחד','פינוי בינוי','אנדלוסית','מלונות מרינה','מרכזים מסחריים בפארק לכיש','פרויקטים בפארק ההייטק'];
-$('#permits').innerHTML='<h3>היתרים ב-2026</h3>'+PERMITS.map(function(p){return '<span class="chip">'+p+'</span>'}).join('');
-
-/* מסך 6: תדריך */
-var AUD=[
- {k:'ראש העיר והנהלה',o:'ב-2025 הוצאנו 287 היתרים ו-1,284 בקשות עדיין בטיפול. ב-2026 אנחנו מקצרים את הדרך.',ask:'בקשה: גיבוי למינוי גורם פנימי מתאם ולהתאמת מערכת הוועדה.'},
- {k:'עורכי בקשות ומתכננים',o:'חוק התכנון והבנייה השתנה ב-2025. אנחנו נערכים כדי שתדעו מראש מה נדרש בבקשה.',ask:'בקשה: להגיש בקשות שלמות ולהיעזר בהכוונה של האגף.'},
- {k:'עובדי העירייה והגורמים הפנימיים',o:'שיטת הרמזור תיכנס לשימוש ב-2026. היא נועדה לקדם בקשות בעלות השפעה.',ask:'בקשה: שיתוף פעולה ומענה במהירות בסבבי הבדיקה.'}
-];
-var STEPS=[
- ['מצב','1,284 בקשות בטיפול, 287 היתרים, 2,264 יחידות דיור'],
- ['חוק','שמונה שינויים ב-2025, הערכות ללמידה, נהלים ומערכות'],
- ['פרויקטים','ארנה, אסותא, פארק לכיש, קמפוס, הרובע המיוחד'],
- ['כלי','רמזור וצמצום סבבי בדיקה: פחות חזרות בדרך להיתר'],
- ['מבחן','היתרים בשבעה מסלולים מובילים ב-2026']
-];
-var QA=[
- ['למה כל כך הרבה בקשות בטיפול?','לפי המצגת: 1,284 בקשות בטיפול ו-287 היתרים בשנת 2025. הנתון מציג מצב ולא את הסיבה.','סיבות ושיעורי המרה לא מופיעים במצגת. להשלים לפני האירוע.'],
- ['מה בעצם משתנה ב-2026?','הטמעת שיטת הרמזור, הקטנת סבבי בדיקה ונקודת ייחוס לפרויקטים מיוחדים, להפחתת רגולציה והקדמת המפגש עם גורמי הכספים.',''],
- ['מי אחראי על התיאום?','מינוי גורם פנימי מתוך האגף שמבצע התקשרות מול גורמים בפנים ובחוץ.','שם הממונה לא מופיע במצגת.'],
- ['מה בדיוק הרמזור?','כלי לשימוש גורמים פנים-עירוניים ולקידום בקשות בעלות השפעה.','קריטריוני הצבעים לא מופיעים במצגת. להכין הגדרה בכתב.'],
- ['איך החוק החדש משפיע על עורכי הבקשות?','נדרשת למידה מעמיקה, התאמת נהלים ומערכות, ומתן מענה והכוונה לעורכי הבקשות.','']
-];
-var CHECK=['להגדיר את הקהל ואת הבקשה המרכזית','להשלים הגדרת רמזור ושם הממונה המתאם','לאמת את התאמת המספרים בקבוצת הדיור','לבדוק את החיבור והמסך באולם','לתרגל את ארבע הדקות עם שעון'];
+/* ===== תדריך ===== */
 var aud=0;
 function renderAud(){
   $('#aud').innerHTML=AUD.map(function(a,i){return '<button data-i="'+i+'" class="'+(i===aud?'on':'')+'">'+a.k+'</button>'}).join('');
@@ -442,10 +557,10 @@ function renderAud(){
   $('#openLine').innerHTML='<b>פתיחה:</b> '+AUD[aud].o+'<br><b class="good">'+AUD[aud].ask+'</b>';
 }
 renderAud();
-$('#track').innerHTML=STEPS.map(function(s,i){return '<div class="step"><em>'+(i+1)+'</em><div><b>'+s[0]+'</b><small>'+s[1]+'</small></div></div>'}).join('');
-$('#qa').innerHTML=QA.map(function(q){return '<div class="q"><button aria-expanded="false">'+q[0]+'</button><div class="a">'+q[1]+(q[2]?'<span class="gap">'+q[2]+'</span>':'')+'</div></div>'}).join('');
+$('#track').innerHTML=STEPS.map(function(s,i){return '<div class="step L-'+s[2]+'"><em>'+(i+1)+'</em><div><b>'+s[0]+'</b><small>'+s[1]+'</small></div></div>'}).join('');
+$('#qa').innerHTML=QA.map(function(q){return '<div class="q"><button aria-expanded="false">'+q[0]+'</button><div class="a">'+q[1]+(q[2]?'<span class="gp">'+q[2]+'</span>':'')+'</div></div>'}).join('');
 $('#qa').querySelectorAll('.q>button').forEach(function(b){b.onclick=function(){var q=b.parentNode;q.classList.toggle('open');b.setAttribute('aria-expanded',q.classList.contains('open'))}});
-var store={get:function(){try{return JSON.parse(localStorage.getItem('rishuy-check')||'[]')}catch(e){return []}},set:function(v){try{localStorage.setItem('rishuy-check',JSON.stringify(v))}catch(e){}}};
+var store={get:function(){try{return JSON.parse(localStorage.getItem('rishuy2-check')||'[]')}catch(e){return []}},set:function(v){try{localStorage.setItem('rishuy2-check',JSON.stringify(v))}catch(e){}}};
 function renderCheck(){
   var done=store.get();
   $('#check').innerHTML=CHECK.map(function(c,i){return '<label><input type="checkbox" id="c'+i+'" data-i="'+i+'"'+(done.indexOf(i)>-1?' checked':'')+'><span>'+c+'</span></label>'}).join('');
@@ -455,33 +570,28 @@ function renderCheck(){
 }
 renderCheck();
 
-/* תפריט */
+/* ===== תפריט ===== */
 var menu=$('#menu'), mb=$('#menuBtn');
 mb.onclick=function(e){e.stopPropagation();menu.hidden=!menu.hidden;mb.setAttribute('aria-expanded',!menu.hidden)};
 document.addEventListener('click',function(){menu.hidden=true;mb.setAttribute('aria-expanded','false')});
-$('#themeBtn').onclick=function(){
-  var r=document.documentElement, dark=(r.dataset.theme==='dark')||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
-  r.dataset.theme=dark?'light':'dark';
-};
+$('#themeBtn').onclick=function(){var r=document.documentElement,dark=(r.dataset.theme==='dark')||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=dark?'light':'dark'};
 $('#resetBtn').onclick=function(){store.set([]);renderCheck()};
 $('#presBtn').onclick=function(){
   var on=this.getAttribute('aria-pressed')!=='true'; this.setAttribute('aria-pressed',on);
-  document.body.classList.toggle('pres',on);
-  clearInterval(presTimer); clearInterval(progTimer); $('#prog').style.width='0';
+  document.body.classList.toggle('pres',on); clearInterval(presTimer); clearInterval(progTimer); $('#prog').style.width='0';
   if(!on) return;
-  var D=14000, t0=Date.now();
+  var D=15000,t0=Date.now();
   progTimer=setInterval(function(){$('#prog').style.width=Math.min(100,(Date.now()-t0)/D*100)+'%'},100);
-  presTimer=setInterval(function(){
-    t0=Date.now(); var i=VIEWS.findIndex(function(v){return v.id===cur}); location.hash=VIEWS[(i+1)%VIEWS.length].id;
-  },D);
+  presTimer=setInterval(function(){t0=Date.now();var i=PAGES.findIndex(function(v){return v.id===cur});location.hash=PAGES[(i+1)%PAGES.length].id},D);
 };
 document.addEventListener('keydown',function(e){
   if(e.target.matches('input,textarea')) return;
-  var i=VIEWS.findIndex(function(v){return v.id===cur});
-  if(e.key==='ArrowRight') location.hash=VIEWS[(i+VIEWS.length-1)%VIEWS.length].id;
-  if(e.key==='ArrowLeft') location.hash=VIEWS[(i+1)%VIEWS.length].id;
+  var i=PAGES.findIndex(function(v){return v.id===cur});
+  if(e.key==='ArrowRight') location.hash=PAGES[(i+PAGES.length-1)%PAGES.length].id;
+  if(e.key==='ArrowLeft') location.hash=PAGES[(i+1)%PAGES.length].id;
 });
 
-go(location.hash.slice(1)||'situation');
+drawHub();
+go(location.hash.slice(1)||'admin');
 })();
 </script>
